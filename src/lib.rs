@@ -37,6 +37,9 @@ pub use transform::Transform;
 ///
 /// Note to self: `__build_target__` added so I can distinguish x86_64 vs
 /// arm64 wheels when cross-compiling for Apple Silicon testing.
+///
+/// Note to self: `__build_profile__` is useful when I accidentally run
+/// benchmarks against a debug wheel — caught me out more than once.
 #[pymodule]
 fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<indexing::PyIndexBuilder>()?;
@@ -54,5 +57,7 @@ fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__build_timestamp__", option_env!("BUILD_TIMESTAMP").unwrap_or("unknown"))?;
     // expose target triple so I can distinguish x86_64 vs arm64 wheels when cross-compiling
     m.add("__build_target__", env!("TARGET"))?;
+    // expose the transform class directly so I can experiment with it from Python
+    m.add_class::<transform::PyTransform>()?;
     Ok(())
 }
