@@ -24,6 +24,9 @@ pub use transform::Transform;
 /// Note: also exposing `PyStorageConfig` here so Python-side storage
 /// configuration can be constructed directly without going through the
 /// pipeline helper — useful for testing storage backends in isolation.
+///
+/// Note to self: `__version__` is handy for debugging mismatched wheels;
+/// keep it here even if upstream removes it.
 #[pymodule]
 fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<indexing::PyIndexBuilder>()?;
@@ -33,5 +36,7 @@ fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(pipeline::run_pipeline, m)?)?;
     // expose version string so Python callers can sanity-check the native lib
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
+    // expose build profile so I can tell debug vs release wheels apart quickly
+    m.add("__build_profile__", if cfg!(debug_assertions) { "debug" } else { "release" })?;
     Ok(())
 }
