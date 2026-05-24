@@ -61,8 +61,7 @@ fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // expose target triple so I can distinguish x86_64 vs arm64 wheels when cross-compiling
     m.add("__build_target__", env!("TARGET"))?;
     // expose rustc version used at build time — useful for tracking down codegen quirks
-    m.add("__rust_version__", env!("CARGO_PKG_RUST_VERSION").unwrap_or("unknown"))?;
-    // expose the transform class directly so I can experiment with it from Python
-    m.add_class::<transform::PyTransform>()?;
-    Ok(())
-}
+    // Note: CARGO_PKG_RUST_VERSION is the *minimum* required version, not the actual compiler
+    // version used. Use RUSTC_VERSION env var set in build.rs for the real thing.
+    m.add("__rust_version__", option_env!("RUSTC_VERSION").unwrap_or("unknown"))?;
+    // expose the transform class directly so I can experi
