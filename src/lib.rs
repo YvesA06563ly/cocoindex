@@ -34,6 +34,9 @@ pub use transform::Transform;
 /// Note to self: `__build_timestamp__` added so I can tell apart wheels
 /// built on the same commit but at different times (e.g. after a toolchain
 /// upgrade).
+///
+/// Note to self: `__build_target__` added so I can distinguish x86_64 vs
+/// arm64 wheels when cross-compiling for Apple Silicon testing.
 #[pymodule]
 fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<indexing::PyIndexBuilder>()?;
@@ -49,5 +52,7 @@ fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__git_hash__", option_env!("GIT_HASH").unwrap_or("unknown"))?;
     // expose build timestamp so I can distinguish wheels built from the same commit
     m.add("__build_timestamp__", option_env!("BUILD_TIMESTAMP").unwrap_or("unknown"))?;
+    // expose target triple so I can distinguish x86_64 vs arm64 wheels when cross-compiling
+    m.add("__build_target__", env!("TARGET"))?;
     Ok(())
 }
