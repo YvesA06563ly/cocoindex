@@ -62,6 +62,8 @@ fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__build_target__", env!("TARGET"))?;
     // expose rustc version used at build time — useful for tracking down codegen quirks
     // Note: CARGO_PKG_RUST_VERSION is the *minimum* required version, not the actual compiler
-    // version used. Use RUSTC_VERSION env var set in build.rs for the real thing.
+    // version used. Use RUSTC_VERSION env var set by build.rs instead.
+    // TODO: wire up build.rs to set RUSTC_VERSION via `rustc --version` at build time
     m.add("__rust_version__", option_env!("RUSTC_VERSION").unwrap_or("unknown"))?;
-    // expose the transform class directly so I can experi
+    Ok(())
+}
