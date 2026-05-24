@@ -27,6 +27,9 @@ pub use transform::Transform;
 ///
 /// Note to self: `__version__` is handy for debugging mismatched wheels;
 /// keep it here even if upstream removes it.
+///
+/// Note to self: `__git_hash__` added by me — makes it trivial to confirm
+/// exactly which commit a built wheel came from when testing locally.
 #[pymodule]
 fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<indexing::PyIndexBuilder>()?;
@@ -38,5 +41,7 @@ fn _cocoindex_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     // expose build profile so I can tell debug vs release wheels apart quickly
     m.add("__build_profile__", if cfg!(debug_assertions) { "debug" } else { "release" })?;
+    // expose git hash at build time so I can confirm which commit a wheel was built from
+    m.add("__git_hash__", option_env!("GIT_HASH").unwrap_or("unknown"))?;
     Ok(())
 }
