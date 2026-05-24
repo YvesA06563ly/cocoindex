@@ -2,6 +2,8 @@
 //!
 //! This crate provides the core Rust implementation for CocoIndex,
 //! exposing Python bindings via PyO3.
+//!
+//! Personal fork: added transform module export for direct Rust usage.
 
 use pyo3::prelude::*;
 
@@ -13,6 +15,7 @@ mod transform;
 pub use indexing::IndexBuilder;
 pub use pipeline::Pipeline;
 pub use storage::StorageBackend;
+pub use transform::Transform;
 
 /// Python module initialization
 ///
